@@ -110,6 +110,8 @@ pre#out{white-space:pre-wrap;word-break:break-all;font:14px/1.7 inherit;margin:0
 .toc a .nb{background:var(--pri);color:#fff;border-radius:6px;padding:1px 7px;font-size:12px;margin-right:8px}
 .toc a.spc .nb{background:var(--acc)}
 .toc .cnt{background:var(--org-soft);color:var(--org);border-radius:10px;padding:1px 8px;font-size:12px;flex:none}
+.chip.edit{background:#fff;border:1px dashed var(--warn);color:var(--warn)}
+.subrow{display:flex;justify-content:space-between;align-items:center;margin:8px 0 2px}.subrow .sub{margin:0}.eb{display:flex;gap:6px}
 .hide{display:none!important}
 .pay{display:flex;gap:6px;flex-wrap:wrap}
 </style>
@@ -203,32 +205,44 @@ const DEFAULT_COMMON=[
  {t:'電視無訊號',on:true},
  {t:'全室門扇未安裝',on:false},
  {t:'廚具未完工',on:false},
- {t:'全室木地板未完工',on:false}
+ {t:'全室木地板未完工',on:false},
+ {t:'木地板地坪不平整',on:false},
+ {t:'總存無提籃',on:false}
 ];
-const NOTE_PRESETS=['核對客變完成','客變核對項目無誤','全室木地板，踩踏與外觀檢視','全室為SPC木地板，使用踩踏及外觀檢測','室內為隔音地板，不敲擊，採外觀檢測','主臥室、左右臥地坪以粉光水泥面交付','對外窗不灑窗','蓮蓬頭設備於交屋時交付','110V迴路未達建議配線','總存無提籃','櫥櫃未完工，需後續由業主自行安裝'];
-const SPACE_B=['客廳廚房','客廳、廚房','客廳','廚房','景觀陽台','工作陽台','主臥室','主臥陽台','主臥衛浴','主臥室衛浴','右臥室','左臥室','次臥','臥室','公共衛浴','公衛','浴室廊道','玄關','書房'];
+const NOTE_PRESETS=['核對客變完成','客變核對項目無誤','全室木地板，踩踏與外觀檢視','全室為SPC木地板，使用踩踏及外觀檢測','室內為隔音地板，不敲擊，採外觀檢測','地磚為隔音工法採外觀檢視','主臥室、左右臥地坪以粉光水泥面交付','對外窗不灑窗','蓮蓬頭設備於交屋時交付','110V迴路未達建議配線','電閘配線不符合建議配線（220V迴路）','電閘配線不符合建議配線（部分迴路）','一樓車庫插座無漏電斷路器','電視線路為裸線無法測試','全室冷氣排水管線未裁切，無法測試','總存無提籃','車庫不檢驗','櫥櫃未完工，需後續由業主自行安裝'];
+const SPACE_B=['客廳廚房','景觀陽台','工作陽台','主臥室','主臥衛浴','左臥室','右臥室','公共衛浴','主臥陽台','臥室','臥室衛浴','客廳','廚房'];
 const FLOORS=['一樓','二樓','三樓','四樓','五樓','頂樓'];
-const ROOMS_H=['車庫','客廳','廚房','餐廳','主臥','前臥室','後臥室','次臥','孝親房','公衛','臥衛','前露台','後露台','神明廳','空間','水塔'];
+const ROOMS_H=['客廳廚房','前臥室','後臥室','主臥室','臥室','前臥衛','後臥衛','臥衛','公衛','前露台','後露台','車庫','空間','頂樓水塔層'];
 const STAIRS=['1-2樓','2-3樓','3-4樓','4-5樓','5-頂樓'];
 const ELG=[
- ['門窗',['大門','門','門板','門框','門檻','窗','窗框','落地窗','三合一門','淋浴拉門','軌道','門擋']],
- ['地壁',['地磚','壁磚','二丁掛','地排','地排蓋','欄杆','扶手','木地板','天花板','壁面金屬板','管邊','管線']],
- ['衛浴',['浴櫃','檯面','面盆水龍頭','濕區水龍頭','水龍頭','馬桶','小便斗','浴缸','止水','明鏡','浴缸維修空間','維修空間蓋板','浴室濕區']],
- ['廚櫃',['櫥櫃','櫥櫃門','櫥櫃櫃體','電器櫃門板','流理台櫃門板','中島櫃體','櫃體','水槽','IH爐','烘碗機','抽油煙機','廚下燈']],
- ['機電',['電箱','電箱箱體','電箱迴路','弱電箱','資訊座','插座','開關','門鈴','燈具','排風蓋','冷排飾蓋','防墜裝置']]
+ ['門窗',['窗','門','大門','落地窗','三合一門','門框','門檻','門板','門扇','淋浴拉門','窗框','軌道','門擋']],
+ ['地壁',['地磚','二丁掛','地排','壁磚','欄杆','管邊','管線','牆面','扶手','木地板','天花板','地排蓋','壁面金屬板']],
+ ['衛浴',['浴櫃','水龍頭','馬桶','面盆','浴缸','明鏡','止水','檯面','濕區']],
+ ['廚櫃',['櫥櫃','抽油煙機','中島櫃','電器櫃','流理台櫃','水槽','IH爐','烘碗機','廚下燈']],
+ ['機電',['電箱','資訊座','弱電箱','插座','門鈴','冷排飾蓋','排風蓋','維修空間蓋板']]
 ];
 const ELEMENTS=ELG.flatMap(g=>g[1]);
 const DFG=[
- ['常用',['刮傷','填縫','缺角','空鼓','裂磚','變形','不平整','異物殘留']],
- ['收邊',['收邊填縫','收邊','矽利康填縫','矽利康收邊','矽利康填補','管邊填縫','孔洞填縫']],
- ['外側',['外側刮傷','外側變形','外側二丁掛填縫','外側矽利康填縫']],
- ['損壞',['破損','鏽蝕','鏽痕','裂縫','髒污','殘漆','異色殘留','顏色不均勻','滲水']],
- ['功能',['開關不順','上鎖不順','異音','作動異常','未作動','吸力不足','止水不良','洩水坡度不足','水量過大','冷水過小','未密合','五金未密合','固定不全','未固定','板材密合度調整']],
- ['缺件/未完工',['缺飾蓋','飾蓋不平整','未安裝','尚未安裝','未完工','客變未更換','未更換','未標示','標示錯位','清潔']]
+ ['常用',['刮傷','填縫','空鼓','矽利康填縫','異物殘留','變形','不平整','缺角','矽利康填補','收邊填縫']],
+ ['收邊',['收邊','矽利康收邊','矽利康收邊填縫','管邊填縫','孔洞填補','四周收邊填縫','窗框收邊填縫','門檻收邊填縫']],
+ ['外側',['外側變形','外側二丁掛填縫','外側刮傷','外側矽利康未施作','外側矽利康填縫']],
+ ['損壞',['裂磚','鏽蝕','鏽蝕清潔','破損','氧化','膠條破損','髒污','異色殘留','滲水','漏水','裂縫']],
+ ['功能',['開關不順','開關不順（異音）','上鎖不順','鬆動','未密合','未固定','固定不全','排水不良','訊號異常（網路）','作動異常','未作動','吸力不足','止水不良','洩水坡度不足','板材密合度調整','歪斜']],
+ ['缺件/未完工',['缺飾蓋','缺蓋','未安裝','未完工','標示錯位','未標示','客變未更換','無漏電斷路器']]
 ];
 const DEFECTS=DFG.flatMap(g=>g[1]);
 
 let custom=store.get(LS_CUSTOM,{el:[],df:[],sp:[]});
+['el','df','sp','room','note'].forEach(k=>{if(!Array.isArray(custom[k]))custom[k]=[]});if(!custom.hide)custom.hide={};
+let editK=null;
+function visD(kind,arr){const h=custom.hide[kind]||[];return arr.filter(x=>!h.includes(x))}
+function qc(kind,arr,attr,withCustom){
+  const list=visD(kind,arr).map(v=>[v,0]).concat(withCustom?custom[kind].map(v=>[v,1]):[]);
+  if(editK===kind)return list.map(([v,c])=>`<button class="chip edit" data-hidex="${kind}|${c}|${esc(v)}">${esc(v)} ×</button>`).join('');
+  return list.map(([v])=>`<button class="chip" data-${attr}="${esc(v)}">${esc(v)}</button>`).join('');
+}
+function editBtns(kind){return `<span class="eb"><button class="btn sm" data-editk="${kind}">${editK===kind?'完成':'✎ 編輯'}</button>${editK===kind?`<button class="btn sm" data-restore="${kind}">還原預設</button>`:''}</span>`}
+function addBtn(kind,label){return editK===kind?'':`<button class="chip add" data-addcustom="${kind}">${label||'＋'}</button>`}
 let S=store.get(LS_CUR,null)||blank('building');
 let openIdx=-1, selItem=-1;
 
@@ -244,59 +258,67 @@ function saveHist(){if(!S.caseNo&&!S.caseName)return;let h=store.get(LS_HIST,[])
 
 /* ---------- element defect sheet ---------- */
 const QUICK=[
- [/^大門/,['刮傷','變形','開關不順','門檻收邊填縫','矽利康填補','上插銷無法使用']],
- [/^門檻/,['收邊填縫','填縫','刮傷','髒污','未完工']],
- [/^門板|^門扇/,['不平整','刮傷','未密合','未安裝']],
- [/^門框/,['刮傷','收邊填縫','填縫']],
+ [/^大門/,['刮傷','變形','門檻收邊填縫','門框收邊填縫','開關不順']],
+ [/^門檻/,['收邊填縫','填縫','刮傷','矽利康填縫','未完工','髒污']],
+ [/^門框/,['刮傷','未密合','收邊填縫']],
+ [/^門板|^門扇|^門片/,['不平整','未密合','刮傷','未安裝']],
  [/^門擋/,['吸力不足','未安裝']],
- [/^門$/,['刮傷','不平整','收邊填縫','矽利康收邊填縫','變形','尚未安裝']],
- [/^落地窗/,['刮傷','變形','矽利康填縫','開關不順','異音','五金未密合','滲水','缺飾蓋']],
- [/^三合一門/,['刮傷','矽利康填縫','開關不順','上鎖不順','變形']],
- [/^淋浴拉門/,['滲水','開關不順','收邊填縫','矽利康填縫']],
+ [/^門$/,['刮傷','不平整','收邊填縫','門板不平整','變形','矽利康收邊填縫','開關不順（異音）','膠條破損','門框未密合']],
+ [/^落地窗/,['刮傷','變形','矽利康填補','矽利康填縫','門檻收邊','窗框收邊填縫','缺飾蓋','開關不順','滲水']],
+ [/^三合一門/,['刮傷','矽利康填縫','變形','開關不順','上鎖不順','膠條破損','膠條外翻']],
+ [/^淋浴拉門/,['不平整','滲水','門檻收邊填縫','開關不順']],
  [/^窗框/,['收邊填縫','刮傷','矽利康填縫']],
- [/^窗/,['刮傷','矽利康填縫','變形','外側刮傷','外側變形','外側二丁掛填縫','外側矽利康填縫','開關不順','防墜裝置作動異常']],
- [/^軌道/,['變形','刮傷','異物殘留']],
- [/地磚|壁磚|二丁掛/,['填縫','空鼓','缺角','裂磚','收邊填縫','管邊填縫','異色殘留','髒污']],
- [/^地排蓋/,['變形','未安裝']],
- [/^地排/,['異物殘留']],
- [/^欄杆|^扶手/,['刮傷','鏽蝕','鏽痕','收邊填縫','矽利康填縫','飾蓋不平整']],
- [/木地板/,['收邊填縫','刮傷','未完工','異音']],
- [/天花板/,['收邊填縫','顏色不均勻','裂縫','破損']],
+ [/^窗/,['刮傷','矽利康填縫','矽利康填補','變形','外側變形','外側二丁掛填縫','缺飾蓋','開關不順','外側矽利康未施作','外側刮傷']],
+ [/^軌道/,['變形','異物殘留']],
+ [/^地磚/,['填縫','空鼓','缺角','收邊填縫','裂磚','異色殘留','矽利康收邊','髒污']],
+ [/^二丁掛/,['填縫','缺角','空鼓','裂磚','孔洞填補']],
+ [/^壁磚/,['填縫','空鼓','缺角','裂磚']],
+ [/^地排蓋/,['變形','鏽蝕','缺蓋']],
+ [/^地排/,['異物殘留','缺蓋','鏽蝕','水管偏移','排水不良']],
+ [/^欄杆|^扶手/,['刮傷','鏽蝕','收邊填縫','矽利康填補','飾蓋不平整']],
  [/^管邊|^管線/,['填縫','收邊填縫']],
+ [/^牆面/,['不平整','油漆補強']],
+ [/木地板/,['收邊填縫','不平整','未完工']],
+ [/天花板/,['收邊填縫','油漆裂縫收邊','顏色不均勻']],
  [/壁面金屬板/,['刮傷','變形']],
- [/^浴櫃/,['矽利康填縫','管邊填縫','滲水','不平整']],
- [/^檯面/,['洩水坡度不足','矽利康填縫']],
- [/水龍頭/,['收邊填縫','不平整','冷水過小','未固定']],
- [/^馬桶/,['未固定','矽利康收邊']],
- [/^小便斗/,['水量過大','未固定']],
- [/^浴缸維修空間/,['未完工']],
- [/^浴缸/,['止水不良','矽利康收邊']],
- [/^止水/,['未固定','矽利康填縫']],
+ [/^浴櫃/,['矽利康填縫','門板不平整','不平整','管線滲水','面盆矽利康填補']],
+ [/水龍頭/,['鬆動','氧化','收邊填縫','歪斜','不平整','客變未更換']],
+ [/^馬桶/,['未固定','矽利康收邊填縫','五金鏽蝕','沖洗器漏水','未完工']],
+ [/^面盆/,['管線收邊填縫','管線滲水','排水不良','矽利康填補']],
+ [/^浴缸/,['矽利康收邊填縫','維修孔未封口','止水不良']],
+ [/^止水/,['未固定','止水不良']],
  [/^明鏡/,['不平整','未固定']],
- [/櫥櫃|櫃|門板/,['不平整','破損','板材密合度調整','矽利康填縫','缺飾蓋','未完工']],
- [/水槽|IH爐|烘碗機|抽油煙機|廚下燈/,['未安裝','未完工','客變未更換','管邊填縫']],
- [/電箱|弱電箱/,['未標示','鏽蝕','刮傷','不平整','缺飾蓋','開關不順','標示錯位']],
- [/插座|開關|資訊座|燈具/,['不平整','未作動','固定不全','缺飾蓋']],
+ [/^檯面/,['洩水坡度不足','矽利康填縫']],
+ [/^濕區/,['總存濾網無法密合','未完工']],
+ [/櫥櫃|廚櫃|中島櫃|電器櫃|流理台櫃|櫃/,['門板不平整','矽利康填補','破損','板材密合度調整','管邊填縫','缺飾蓋','未完工']],
+ [/抽油煙機/,['管邊填縫','濾網清潔','未安裝']],
+ [/水槽|IH爐|烘碗機|廚下燈/,['未安裝','未完工','客變未更換']],
+ [/^弱電箱/,['標示錯位','開關不順']],
+ [/^電箱/,['鏽蝕','刮傷','迴路未標示','缺飾蓋','開關不順','螺絲鬆脫','內部漏水']],
+ [/資訊座/,['訊號異常（網路）','固定不全','外蓋破損']],
+ [/插座|開關|燈具/,['不平整','無漏電斷路器','未作動']],
  [/門鈴/,['未作動']],
- [/飾蓋|排風蓋/,['未安裝','收邊','不平整']],
- [/防墜裝置/,['作動異常']]
+ [/飾蓋|排風蓋|蓋板/,['未安裝','收邊填縫','破損']]
 ];
 function quickOf(el){for(const [re,arr] of QUICK){if(re.test(el))return arr}return DFG[0][1]}
 let sheetJ=-1, sheetMore=false;
 function openSheet(j){sheetJ=j;sheetMore=false;renderSheet();$('sheet').classList.add('show')}
-function closeSheet(){const sp=cur();if(sp&&sheetJ>=0&&sp.items[sheetJ]){const it=sp.items[sheetJ];if(!it.df.length&&!it.el.trim())sp.items.splice(sheetJ,1);else if(!it.df.length)sp.items.splice(sheetJ,1)}sheetJ=-1;$('sheet').classList.remove('show');save();renderSpaces()}
+function closeSheet(){if(editK==='df')editK=null;const sp=cur();if(sp&&sheetJ>=0&&sp.items[sheetJ]){const it=sp.items[sheetJ];if(!it.df.length&&!it.el.trim())sp.items.splice(sheetJ,1);else if(!it.df.length)sp.items.splice(sheetJ,1)}sheetJ=-1;$('sheet').classList.remove('show');save();renderSpaces()}
 function renderSheet(){
   const sp=cur();if(!sp||!sp.items[sheetJ])return;const it=sp.items[sheetJ];
-  const q=quickOf(it.el);const chip=d=>`<button class="chip ${it.df.includes(d)?'on':''}" data-sdf="${esc(d)}">${esc(d)}</button>`;
+  const ed=editK==='df';const hid=custom.hide.df||[];
+  const q=quickOf(it.el).filter(d=>!hid.includes(d)||it.df.includes(d));
+  const chip=d=>ed?`<button class="chip edit" data-hidex="df|${custom.df.includes(d)&&!DEFECTS.includes(d)?1:0}|${esc(d)}">${esc(d)} ×</button>`:`<button class="chip ${it.df.includes(d)?'on':''}" data-sdf="${esc(d)}">${esc(d)}</button>`;
   const extra=it.df.filter(d=>!q.includes(d)&&!DEFECTS.includes(d)&&!custom.df.includes(d));
   $('sheetBox').innerHTML=`<div class="top"><div class="row" style="margin:0"><input type="text" class="elin" id="sheetEl" value="${esc(it.el)}" placeholder="物件"></div>
    <div class="prev" id="sheetPrev">${esc(it.el+it.df.join('、'))||'…'}</div></div>
-   <div class="mid"><div class="sub">常用</div><div class="chips">${q.map(chip).join('')}${extra.map(chip).join('')}</div>
-   ${sheetMore?DFG.concat([['自訂',custom.df]]).map(g=>`<div class="grp"><span class="gl">${g[0]}</span>${g[1].filter(d=>!q.includes(d)).map(chip).join('')}${g[0]==='自訂'?'<button class="chip add" data-addcustom="df">＋</button>':''}</div>`).join(''):`<button class="btn" id="sheetMore" style="width:100%;margin-top:8px">更多缺失 ▾</button>`}</div>
+   <div class="mid"><div class="subrow"><span class="sub">常用</span>${editBtns('df')}</div><div class="chips">${q.map(chip).join('')}${extra.map(chip).join('')}</div>
+   ${sheetMore||ed?DFG.concat([['自訂',custom.df]]).map(g=>{const arr=g[1].filter(d=>!q.includes(d)&&(g[0]==='自訂'||!hid.includes(d)||it.df.includes(d)));return `<div class="grp"><span class="gl">${g[0]}</span>${arr.map(chip).join('')}${g[0]==='自訂'&&!ed?'<button class="chip add" data-addcustom="df">＋</button>':''}</div>`}).join(''):`<button class="btn" id="sheetMore" style="width:100%;margin-top:8px">更多缺失 ▾</button>`}</div>
    <div class="foot"><button class="btn" id="sheetDel" style="color:var(--warn)">刪除此物件</button><button class="btn pri" id="sheetDone">完成</button></div>`;
 }
 $('sheet').addEventListener('click',e=>{if(e.target.id==='sheet')closeSheet()});
 
+function rerenderLists(){renderNotes();renderSpaces();if(sheetJ>=0)renderSheet()}
 /* ---------- toc & preview ---------- */
 function openToc(){
   const cards=[...document.querySelectorAll('.card[data-toc]')].filter(c=>!c.classList.contains('hide'));
@@ -411,7 +433,7 @@ function renderHead(){
 }
 function renderNotes(){
   $('notes').innerHTML=S.notes.map((n,i)=>`<div class="li"><span class="n">${i+1}.</span><input type="text" data-note="${i}" value="${esc(n)}"><button class="x" data-delnote="${i}">×</button></div>`).join('');
-  $('noteChips').innerHTML=NOTE_PRESETS.map(p=>`<button class="chip" data-addnote="${esc(p)}">${esc(p)}</button>`).join('')+`<button class="chip add" data-addnote="">＋ 空白一條</button>`;
+  $('noteChips').innerHTML=`<div class="subrow" style="width:100%"><span class="sub">快選</span>${editBtns('note')}</div>`+qc('note',NOTE_PRESETS,'addnote',true)+(editK==='note'?'':`<button class="chip add" data-addcustom="note">＋ 新增快選</button><button class="chip add" data-addnote="">＋ 空白一條</button>`);
 }
 function renderCommon(){
   $('common').innerHTML=S.common.map((c,i)=>`<div class="li"><input class="chk" type="checkbox" data-comon="${i}" ${c.on?'checked':''}><input type="text" data-com="${i}" value="${esc(c.t)}"><button class="x" data-delcom="${i}">×</button></div>`).join('');
@@ -431,14 +453,13 @@ function renderSpaces(){
       bd=`<div class="bd">
         <div class="row"><label>空間名稱</label><input type="text" data-spname="${i}" value="${esc(sp.name)}" placeholder="點下方快選或自行輸入"></div>
         ${isHouse?`<div class="sub">樓層</div><div class="chips">${chipRow(FLOORS,'floor')}</div>
-        <div class="sub">空間</div><div class="chips">${chipRow(ROOMS_H.concat(custom.sp),'room')}<button class="chip add" data-addcustom="sp">＋</button></div>
+        <div class="subrow"><span class="sub">空間</span>${editBtns('room')}</div><div class="chips">${qc('room',ROOMS_H,'room',true)}${addBtn('room')}</div>
         <div class="sub">樓梯</div><div class="chips">${chipRow(STAIRS,'stair')}</div>`
-        :`<div class="chips">${chipRow(SPACE_B.concat(custom.sp),'spset')}<button class="chip add" data-addcustom="sp">＋</button></div>
-        <div class="sub">切換透天樓層快選</div><div class="chips">${chipRow(FLOORS,'floor')}${chipRow(STAIRS,'stair')}</div>`}
+        :`<div class="subrow"><span class="sub">空間快選</span>${editBtns('sp')}</div><div class="chips">${qc('sp',SPACE_B,'spset',true)}${addBtn('sp')}</div>`}
         <div class="sub">已記錄（點一下可修改）</div>
         <div class="items">${sp.items.map((it,j)=>`<div class="item"><span data-selitem="${j}">${esc(it.el)}${esc(it.df.join('、'))}</span><button class="x" data-delitem="${j}">×</button></div>`).join('')||'<span class="sub">點下方物件，會跳出缺失選單</span>'}</div>
-        <div class="sub">物件</div>
-        ${ELG.map(g=>`<div class="grp"><span class="gl">${g[0]}</span>${chipRow(g[1],'el')}</div>`).join('')}<div class="grp"><span class="gl">自訂</span>${chipRow(custom.el,'el')}<button class="chip add" data-addcustom="el">＋</button></div>
+        <div class="subrow"><span class="sub">物件</span>${editBtns('el')}</div>
+        ${ELG.map(g=>{const c=qc('el',g[1],'el',false);return c?`<div class="grp"><span class="gl">${g[0]}</span>${c}</div>`:''}).join('')}<div class="grp"><span class="gl">自訂</span>${editK==='el'?custom.el.map(v=>`<button class="chip edit" data-hidex="el|1|${esc(v)}">${esc(v)} ×</button>`).join(''):chipRow(custom.el,'el')}${addBtn('el')}</div>
         <div class="sub">其他（直接打字，會接在最後）</div>
         <textarea data-extra="${i}" placeholder="例：浴櫃管線滲水">${esc(sp.extra||'')}</textarea>
         <div class="row" style="margin-top:8px;justify-content:space-between">
@@ -466,6 +487,11 @@ document.addEventListener('click',e=>{
   const t=e.target.closest('button,a,[data-toggle],[data-selitem]');if(!t)return;if(t.tagName==='A')e.preventDefault();
   const d=t.dataset;
   if(d.m){if(d.m==='re'&&S.mode!=='re')S._wasHouse=(S.mode==='house');S.mode=d.m;save();renderMode();renderSpaces();return}
+  if(d.editk){editK=editK===d.editk?null:d.editk;rerenderLists();return}
+  if(d.restore){custom.hide[d.restore]=[];store.set(LS_CUSTOM,custom);rerenderLists();toast('已還原預設');return}
+  if(d.hidex){const [k,c,v]=[d.hidex.split('|')[0],d.hidex.split('|')[1],d.hidex.split('|').slice(2).join('|')];
+    if(c==='1'){custom[k]=custom[k].filter(x=>x!==v)}else{custom.hide[k]=custom.hide[k]||[];if(!custom.hide[k].includes(v))custom.hide[k].push(v)}
+    store.set(LS_CUSTOM,custom);rerenderLists();return}
   if(t.id==='tocBtn'){openToc();return}
   if(t.id==='prevBtn'){openPreview();return}
   if(t.id==='prevCopy'){copy();return}
@@ -496,7 +522,7 @@ document.addEventListener('click',e=>{
   if(sp){
     if(d.spset){sp.name=d.spset;save();renderSpaces();return}
     if(d.floor){const m=sp.name.match(/^(一|二|三|四|五|六|頂)樓/);sp.name=m?d.floor+sp.name.slice(m[0].length):d.floor+sp.name;save();renderSpaces();return}
-    if(d.room){const m=sp.name.match(/^(一|二|三|四|五|六|頂)樓/);const fl=m?m[0]:'';sp.name=fl+d.room;save();renderSpaces();return}
+    if(d.room){if(/^頂樓/.test(d.room)){sp.name=d.room}else{const m=sp.name.match(/^(一|二|三|四|五|六|頂)樓/);const fl=m&&!/^頂樓水塔/.test(sp.name)?m[0]:'';sp.name=fl+d.room}save();renderSpaces();return}
     if(d.stair){sp.name=d.stair;save();renderSpaces();return}
     if(d.el){let j=sp.items.findIndex(x=>x.el===d.el);if(j<0){sp.items.push({el:d.el,df:[]});j=sp.items.length-1}openSheet(j);return}
     if(d.df){if(selItem<0||!sp.items[selItem]){sp.items.push({el:'',df:[]});selItem=sp.items.length-1}const it=sp.items[selItem];const k=it.df.indexOf(d.df);if(k>=0)it.df.splice(k,1);else it.df.push(d.df);save();renderSpaces();return}
@@ -506,8 +532,8 @@ document.addEventListener('click',e=>{
     if(d.delsp!==undefined){modal(`<h3>刪除「${esc(sp.name||'未命名')}」？</h3><div class="row"><button class="btn" data-close>取消</button><button class="btn pri" data-confirmdelsp="${d.delsp}" style="background:var(--warn);border-color:var(--warn)">刪除</button></div>`);return}
     if(d.next!==undefined){if(+d.next===S.spaces.length-1)addSpace();else{openIdx=+d.next+1;selItem=-1;renderSpaces();setTimeout(()=>$('sp'+openIdx).scrollIntoView({behavior:'smooth',block:'start'}),30)}return}
   }
-  if(d.addcustom){const kind=d.addcustom;const lab={el:'物件',df:'缺失',sp:'空間'}[kind];modal(`<h3>新增自訂${lab}</h3><div class="row"><input type="text" id="cusIn" placeholder="輸入${lab}"></div><div class="sub">已存自訂（點×刪除）</div><div class="chips">${custom[kind].map((x,i)=>`<button class="chip" data-delcus="${kind}|${i}">${esc(x)} ×</button>`).join('')||'無'}</div><div class="row" style="margin-top:10px"><button class="btn" data-close>取消</button><button class="btn pri" data-savecus="${kind}">加入</button></div>`);setTimeout(()=>$('cusIn').focus(),50);return}
-  if(d.savecus){const v=$('cusIn').value.trim();if(v&&!custom[d.savecus].includes(v)){custom[d.savecus].push(v);store.set(LS_CUSTOM,custom)}closeModal();if(sheetJ>=0){const it=cur()&&cur().items[sheetJ];if(it&&d.savecus==='df'&&v&&!it.df.includes(v))it.df.push(v);save();renderSheet()}else renderSpaces();return}
+  if(d.addcustom){const kind=d.addcustom;const lab={el:'物件',df:'缺失',sp:'空間',room:'空間',note:'備註'}[kind];modal(`<h3>新增自訂${lab}</h3><div class="row"><input type="text" id="cusIn" placeholder="輸入${lab}"></div><div class="sub">已存自訂（點×刪除）</div><div class="chips">${custom[kind].map((x,i)=>`<button class="chip" data-delcus="${kind}|${i}">${esc(x)} ×</button>`).join('')||'無'}</div><div class="row" style="margin-top:10px"><button class="btn" data-close>取消</button><button class="btn pri" data-savecus="${kind}">加入</button></div>`);setTimeout(()=>$('cusIn').focus(),50);return}
+  if(d.savecus){const v=$('cusIn').value.trim();if(v&&!custom[d.savecus].includes(v)){custom[d.savecus].push(v);store.set(LS_CUSTOM,custom)}closeModal();renderNotes();if(sheetJ>=0){const it=cur()&&cur().items[sheetJ];if(it&&d.savecus==='df'&&v&&!it.df.includes(v))it.df.push(v);save();renderSheet()}else renderSpaces();return}
   if(d.delcus){const [k,i]=d.delcus.split('|');custom[k].splice(+i,1);store.set(LS_CUSTOM,custom);closeModal();renderSpaces();return}
   if(d.confirmdelsp!==undefined){S.spaces.splice(+d.confirmdelsp,1);openIdx=-1;selItem=-1;save();closeModal();renderSpaces();return}
   if(d.close!==undefined){closeModal();return}
